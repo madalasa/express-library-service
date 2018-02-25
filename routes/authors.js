@@ -1,16 +1,13 @@
 var express = require('express');
 var router = express.Router();
 
+var authorController = require('../controllers/authorController');
 
-router.get('/:id', function(req, res, next){});
-router.put('/:id', function(req, res, next){});
-router.delete('/:id', function(req, res, next){});
+router.get('/:id', authorController.findAuthor)
+      .put('/:id', authorController.updateAuthor)
+      .delete('/:id', authorController.deleteAuthor);
 
-router.get('/', function(req, res, next){res.json({author: 'Madhu'})});
-router.post('/', function(req, res, next){});
-router.put('/', function(req, res, next){});
-router.delete('/', function(req, res, next){});
-
-
+router.get('/', authorController.findAuthors)
+       .post('/', authorController.createAuthor);
 
 module.exports = router;

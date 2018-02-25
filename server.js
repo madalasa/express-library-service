@@ -11,7 +11,7 @@ var users = require('./routes/users');
 var books = require('./routes/books');
 var bookInstances = require('./routes/bookinstances');
 var genres = require('./routes/genres');
-var author = require('./routes/authors');
+var authors = require('./routes/authors');
 
 var app = express();
 
@@ -30,6 +30,8 @@ app.use('/', index);
 // app.use('/users', books);
 app.use('/catalog/books', books);
 app.use('/catalog/genres', genres);
+app.use('/catalog/authors', authors);
+app.use('/catalog/bookinstances', bookInstances);
 
 var db = mongoose.connect('mongodb://localhost:27017/cataloglibrary');
 
@@ -41,12 +43,14 @@ app.use(function(req, res) {
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  // res.locals.message = err.message;
+  // res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
+  // render the error page {'ReferenceError': err.message}
   res.status(err.status || 500);
-  res.render('error');
+  
+  console.log(err);
+  res.json(err.message);
 });
 
 module.exports = app;
