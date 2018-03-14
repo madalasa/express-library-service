@@ -42,29 +42,31 @@ exports.createBook = function (req, res) {
 
 exports.findBook = function (req, res) {
     async.parallel({
-        book: function(callback) {
+        book: function (callback) {
             Book.findById(req.params.id)
-            .populate('author')
-            .populate('genre')
-            .exec(callback)
+                .populate('author')
+                .populate('genre')
+                .exec(callback)
         },
-        bookInstance: function(callback){
-            BookInstance.find({'book': req.params.id})
-                        .exec(callback);
-        } 
+        bookInstance: function (callback) {
+            BookInstance.find({ 'book': req.params.id })
+                .exec(callback);
+        }
     },
         function (err, results) {
             if (err) {
-                err.status(500);
+                console.log("error: "+JSON.stringify(err));
+                res.status(500);
                 res.send(err);
             }
-            else {                
-                // console.log(results.bookInstance);
-                if(results.bookInstance){                    
-                    var finalBook = {'book': results.book, 
-                    'bookinstances': results.bookInstance};
+            else {
+                if (results.bookInstance) {
+                    var finalBook = {
+                        'book': results.book,
+                        'bookinstances': results.bookInstance
+                    };
                 }
-                
+
                 res.send(finalBook);
             }
         }

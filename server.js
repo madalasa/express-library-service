@@ -33,7 +33,12 @@ app.use('/catalog/genres', genres);
 app.use('/catalog/authors', authors);
 app.use('/catalog/bookinstances', bookInstances);
 
-var db = mongoose.connect('mongodb://localhost:27017/cataloglibrary');
+var mongoPort = (!process.env.MONGO_PORT)? 27017: process.env.MONGO_PORT;
+var mongoHost = (!process.env.MONGO_HOST)? 'localhost': process.env.MONGO_HOST;
+
+console.log("mongo port:"+mongoPort+", host:"+mongoHost);
+
+var db = mongoose.connect('mongodb://'+mongoHost+':'+mongoPort+'/cataloglibrary');
 
 // catch 404 and forward to error handler
 app.use(function(req, res) {

@@ -1,4 +1,6 @@
 var Author = require('../models/author');
+var Book = require('../models/book');
+var async = require('async');
 
 exports.createAuthor = function (req, res, next) {
     var author = new Author(req.body);
@@ -13,17 +15,47 @@ exports.createAuthor = function (req, res, next) {
     });
 }
 
-exports.findAuthor = function (req, res, next) {
-    Author.findById(req.params.id).exec(function (err, author) {
+exports.findAuthor = function (req, res) {
+
+    async.parallel({
+        author: function(callback) {
+            Author.findById(req.params.id)
+            .exec(callback)
+        },
+        books: function(callback) {
+            Book
+            .find({'author': req.params.id})
+            .exec(callback);
+        }
+    },
+    function (err, results) {
         if (err) {
-            //TODO differentite between validation errors and server error
-            res.status(500);
+            console.log("error: "+JSON.stringify(err));
+            res.status(404);
             res.send(err);
         }
-        else {
-            res.json(author);
+        else {            
+                var finalAuthor = {
+                    'author': results.author,
+                    'books': results.books
+                };
+            
+
+            res.send(finalAuthor);
         }
-    });
+    }
+
+)
+    // Author.findById(req.params.id).exec(function (err, author) {
+    //     if (err) {
+    //         //TODO differentite between validation errors and server error
+    //         res.status(500);
+    //         res.send(err);
+    //     }
+    //     else {
+    //         res.json(author);
+    //     }
+    // });
 }
 
 exports.updateAuthor = function (req, res) {
